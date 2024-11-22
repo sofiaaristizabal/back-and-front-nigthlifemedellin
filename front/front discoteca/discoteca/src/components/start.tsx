@@ -54,7 +54,7 @@ export const Start = () => {
                 text-white font-mono text-center font-bold 
                 shadow-lg text-xl 
                 flex items-center justify-center h-full">
-             Ingresa de empresas 
+             Ingreso de empresas 
             </div>
             </button>
             </div>

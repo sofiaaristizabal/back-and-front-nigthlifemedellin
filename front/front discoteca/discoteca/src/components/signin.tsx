@@ -12,6 +12,10 @@ export const Signin = () => {
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+
+  const [inputType, setInputType] = useState("password");
+
+  const navigate = useNavigate(); 
   
   const handleSubmit = (e: { preventDefault: () => void; }) => {
 
@@ -46,6 +50,11 @@ export const Signin = () => {
               console.log(data)
               localStorage.setItem("token", data.token)
               
+              const consumidorId = data.id;
+              localStorage.setItem("consumidorId", consumidorId);
+              console.log(consumidorId)
+
+              navigate('/login')
             })
           }else {
              alert("FALLA A LA HORA DE CREAR USUARIO")
@@ -142,15 +151,44 @@ export const Signin = () => {
 
       <div className="mb-4">
         <label className="block text-sm font-medium text-lime-600" htmlFor="password">Contraseña</label>
+        <div className="flex flex-row mt-1">
         <input
-          type="password"
+          type={inputType}
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-3/5 mt-1 block w-full p-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
           required
         />
+
+          <button 
+           type="button"
+           className=" basis-1/6 bg-gray-800 rounded-full w-full mt-3 ml-4"
+           onClick={ ()=>{
+            if(inputType==="password"){
+              setInputType("text");
+            }else{
+              setInputType("password");
+            }
+           }}
+          
+           >
+            {inputType === 'password' ? (
+                <img
+                src = "/eye.png"
+                alt = "show password"
+                className = "rounded-full w-8 h-8 text-white"
+                ></img>
+            ): (<img
+                src = "/eye-off.png"
+                alt = "hide password"
+                className = "rounded-full w-8 h-8"
+                ></img>)}
+          </button>
+        </div>
       </div>
+
+
       <button 
        type="submit"
        className="w-3/5 mt-8 w-full py-2 bg-lime-600 text-white rounded-md hover:bg-lime-900 transition duration-300">

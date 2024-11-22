@@ -2,6 +2,43 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+interface ErrorPopupProps {
+  message: string;
+  onClose: () => void;
+}
+
+const ErrorPopup: React.FC<ErrorPopupProps> = ({ message, onClose }) => {
+  if (!message) return null;
+  
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-red-600 text-white p-6 rounded-lg shadow-lg relative w-80">
+        <button onClick={onClose} className="absolute top-2 right-2 text-white font-bold">
+          &times;
+        </button>
+        <h3 className="text-lg font-semibold mb-2">Error</h3>
+        <p>{message}</p>
+      </div>
+    </div>
+  );
+};
+
+const LoginPopup: React.FC<ErrorPopupProps> = ({ message, onClose }) => {
+  if (!message) return null;
+  
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-green-600 text-white p-6 rounded-lg shadow-lg relative w-80">
+        <button onClick={onClose} className="absolute top-2 right-2 text-white font-bold">
+          &times;
+        </button>
+        <h3 className="text-lg font-semibold mb-2">Bienvenido</h3>
+        <p>{message}</p>
+      </div>
+    </div>
+  );
+};
+
 export const Login = () => {
   
     const [email, setEmail] = useState('');
@@ -9,9 +46,12 @@ export const Login = () => {
   
     const [inputType, setInputType] = useState("password");
 
+    const [errorMessage, setErrorMessage] = useState('');
+    const [loginPopup, setLoginPopup] = useState(false);
+
     const navigate = useNavigate();
   
-    const handleSubmit = (e: { preventDefault: () => void; }) => {
+    const handleSubmit = async (e: { preventDefault: () => void; }) => {
   
       e.preventDefault(); //prevents the default event which is reloading the oage when the form is submitted from happening
       
@@ -21,31 +61,45 @@ export const Login = () => {
       const url = "http://localhost:3000/consumidores/login";
       const body = JSON.stringify({email, password}); //converts email and password from a JSON to a string
   
-      fetch(url, {
+      try{
+
+        const response = await fetch(url, {
           method: "POST",
           headers:{
               "Content-Type":"application/json" 
           },
           body: JSON.stringify({email, password}),
-      }).then(
-          (res) => {
+      }); 
            
-              if(res.ok){
-                  alert("USUARIO LOGGEADO EXITOSAMENTE") //si la respuesta es correcta es usuario se logeo exitosamente
-                  res.json().then((data) =>{
+              if(response.ok){
+                  //alert("USUARIO LOGGEADO EXITOSAMENTE") //si la respuesta es correcta es usuario se logeo exitosamente
+                  response.json().then((data) =>{
                     console.log(data)
                     localStorage.setItem("token", data.token)
 
-                    const consumidorId = data.id;
+                    const consumidorId = data.consumidor.id;
                     localStorage.setItem("consumidorId", consumidorId);
+                    console.log(consumidorId)
+                    setLoginPopup(true);
                     
                   })
                 }else {
-                   alert("mal")
+
+                   const errorData = await response.json();
+                   console.log(errorData);
+                   const error=errorData.message==="credenciales invalidas"?"Invalid credentials":errorData.message
+                   throw new Error(error || "Ocurrio un error intentando loggear");
                 }
               
-          }
-      )
+      }catch(error){
+        if (error instanceof Error) {
+          setErrorMessage(error.message); // Set the error message from the caught Error
+      } else {
+          setErrorMessage("An unknown error occurred"); // Fallback if it's not an Error instance
+      }
+      }
+      
+    
     };
 
    const handleSignUpClick = () =>{
@@ -53,6 +107,11 @@ export const Login = () => {
       navigate("/Signin");
    
    }
+
+   const handleLoginPopupClose = () => {
+    setLoginPopup(false);
+    navigate("/mainPage");
+  };
 
 
   return (
@@ -131,12 +190,27 @@ export const Login = () => {
     <p  className="block text-sm font-medium text-gray-300">No tienes una cuenta todavia?</p>
     <button 
     className="mt-6 w-full py-2 bg-lime-500 text-white rounded-md hover:bg-lime-800 transition duration-300"
+    onClick={handleSignUpClick}
     >
         Sign up
       </button>
 
   </div>
+  
+  {/* Render the ErrorPopup component if there is an error */}
+   {errorMessage && (
+    <ErrorPopup
+        message={errorMessage}
+        onClose={() => setErrorMessage('')}
+    />
+  )}
 
+ {loginPopup && (
+          <LoginPopup
+            message="usuario logeado exitosamente!"
+            onClose={handleLoginPopupClose}
+          />
+        )}
 
 </div>
   )

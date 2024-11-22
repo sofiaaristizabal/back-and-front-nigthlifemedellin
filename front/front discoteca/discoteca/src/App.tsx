@@ -7,6 +7,9 @@ import { SignupEmpresa } from './components/signupEmpresa'
 import { EditarPerfilUsuario } from './components/editarPerfilUsuario'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import { LoginEmpresa } from './components/loginEmpresa'
+import {MainPage} from './components/MainPage'
+import { AddEvent } from './components/addEvent'
+
 
 function App() {
   const [count, setCount] = useState(0)
@@ -22,6 +25,8 @@ function App() {
         <Route path="/signin" element={<Signin/>} />
         <Route path="/signUpEmpresa" element={<SignupEmpresa/>} />
         <Route path="/editarPerfilUsuario" element={<EditarPerfilUsuario />} />
+        <Route path="/mainPage" element={<MainPage/>} />
+        <Route path="/addEvent" element={<AddEvent/>} />
       </Routes>
     </div>
     </Router>

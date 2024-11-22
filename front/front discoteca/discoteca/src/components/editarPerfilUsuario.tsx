@@ -4,17 +4,21 @@ import { useEffect } from 'react';
 
 export const EditarPerfilUsuario = () => {
 
-  const [profileImage, setProfileImage] = useState('/usuario.jpg'); 
+  const [profileImage, setProfileImage] = useState(''); 
   const [descripcion, setDescripcion] = useState('');
   const [horarios, setHorarios] = useState('');
   const [contacto, setContacto] = useState('');
   const [redSocial, setRedSocial] = useState('');
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
+
+  const id = localStorage.getItem("empresaId"); 
 
    useEffect(() => {
     
      const fetchProfileImage = async () => {
     
-      const url = "http://localhost:3000/discotecas";
+      const url = `http://localhost:3000/discotecas/${id}`;
 
       try {
 
@@ -22,8 +26,8 @@ export const EditarPerfilUsuario = () => {
 
         if(response.ok){
           const data = await response.json();
-
-          setProfileImage(data.profileImage || 'usuario.jpg');
+          console.log(data)
+          setProfileImage(data.profileImage);
 
         } else {
           console.log("Falla a la hora de obtener la imagen de perfil")
@@ -34,36 +38,45 @@ export const EditarPerfilUsuario = () => {
 
      };
 
-     fetchProfileImage();
-
-   }, []);
-
-  const changeProfliePicture = (e: {preventDefault: () => void;}) =>{
-   e.preventDefault();
-
-   const url = "http://localhost:3000/discotecas";
-
-   fetch(url, {
-    method:"PATCH",
-    headers:{
-      "Content-Type": "application/json"
-  },  
-
-   body: JSON.stringify({profileImage})
-    
-  } ).then((res)=>{
-
-    if(res.ok){
-      alert("FOTO DE PERFIL MODIFICADA EXITOSAMENTE")
-      res.json().then((data) =>{
-        console.log(data)
-        localStorage.setItem("token", data.token)
-      })
+     if (id) {
+      fetchProfileImage();
     } else {
-      alert("FALLA A LA HORA DE MODIFICAR FOTO DE PERFIL")
+      console.log("No ID found in localStorage");
     }
 
-  })
+   }, [id]);
+
+  const changeProfliePicture = async (e: {preventDefault: () => void;}) =>{
+   e.preventDefault();
+
+   if(!selectedFile){
+    alert("Debe seleccionar una imagen primero");
+    return;
+   }
+
+   const formData = new FormData();
+   formData.append("profileImage", selectedFile);
+
+   const url = `http://localhost:3000/discotecas/${id}`;
+
+   try{
+
+    const response = await fetch(url, {
+      method:"PATCH", 
+      body:formData
+    });
+    
+    if(response.ok){
+      setProfileImage(URL.createObjectURL(selectedFile)); 
+      alert("Se actualizo la imagen de perfil correctamente");
+    } else {
+      alert("Error a la hora de actualizar la foto de perfil")
+    }
+
+
+   }catch (error){
+    console.error("error cargando la imagen de perfil ", error)
+   }
 
   }
 
@@ -71,7 +84,7 @@ export const EditarPerfilUsuario = () => {
 
     e.preventDefault();
 
-    const url = "http://localhost:3000/discotecas";
+    const url = `http://localhost:3000/discotecas/${id}`;
   
     fetch(url, {
       method:"PATCH",
@@ -79,7 +92,7 @@ export const EditarPerfilUsuario = () => {
         "Content-Type": "application/json"
     },  
 
-     body: JSON.stringify({ descripcion, horarios, contacto, redSocial})
+     body: JSON.stringify({ descripcion, horarios, contacto, redSocial, profileImage})
       
     } ).then((res)=>{
 
@@ -103,16 +116,12 @@ export const EditarPerfilUsuario = () => {
 
     <div className="flex flex-col items-center justify-center  min-h-full bg-gray-900">
      
-     <div className="mt-8 flex flex-col justify-center mb-6">
+     <div className="mt-8 flex flex-col items-center justify-center mb-6">
         <img 
           src={profileImage}
           alt="profile" 
-          className="w-60 h-60 rounded-full border-4 border-green-300 object-cover"
+          className="w-70 h-60 rounded-full border-8 border-white object-cover shadow-[0_0_20px_4px_rgba(72,187,120,0.5)]"
         />
-
-        <button className="mt-6 px-6 py-2 bg-violet-600 text-white rounded-lg hover:bg-violet-800 transition">
-          Change profile picture 
-        </button>
       </div>
 
      
@@ -161,6 +170,18 @@ export const EditarPerfilUsuario = () => {
           id="redSocial"
           value={redSocial}
           onChange = {(e) => setRedSocial(e.target.value)}
+          className="basis-5/6 mt-1 block w-full p-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
+          required
+        />
+      </div>
+
+      <div className="mb-4">
+        <label className="block text-xl font-medium font-mono text-gray-300 mb-4" htmlFor="password">URL imagen de perfil</label>
+        <input
+          type="text"
+          id="redSocial"
+          value={profileImage}
+          onChange = {(e) => setProfileImage(e.target.value)}
           className="basis-5/6 mt-1 block w-full p-2 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
           required
         />
