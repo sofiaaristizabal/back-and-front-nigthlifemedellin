@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { CreateDiscotecaDto } from './dto/create-discoteca.dto';
 import { UpdateDiscotecaDto } from './dto/update-discoteca.dto';
 import { Discoteca } from './entities/discoteca.entity';
@@ -12,16 +12,23 @@ import * as bcrypt from 'bcrypt';
 export class DiscotecasService {
 
   constructor(@InjectRepository(Discoteca) 
-  private readonly discotecasRepository: Repository<Discoteca>,
-  private readonly usuarioService: UsuariosService
+  private readonly discotecasRepository: Repository<Discoteca>
   )
   {}
 
   async create(createDiscotecaDto: CreateDiscotecaDto) {
-    const usuario = await this.usuarioService.create(createDiscotecaDto); 
-    const discoteca = this.discotecasRepository.create({...createDiscotecaDto, usuario}) 
+
+    try{
+
+    const discoteca = this.discotecasRepository.create(createDiscotecaDto) 
+    discoteca.password = await bcrypt.hash(discoteca.password, 10);
     await this.discotecasRepository.save(discoteca)
     return discoteca;
+    }catch (err){
+      console.log(err);
+      throw new BadRequestException(err.detail);
+    }
+    
   }
 
   async findAll() {
@@ -30,17 +37,27 @@ export class DiscotecasService {
     return discotecas;
   }
 
-  findOne(id: string) {
-    const discoteca = this.discotecasRepository.findOne({where:{id}, relations: ['user']})
+  async findOne(id: string) {
+    const discoteca = await this.discotecasRepository.findOne({where:{id}})
     if(!discoteca){
       throw new NotFoundException (`the discoteca with id #${id} was not found `)
     }
     return discoteca;
   }
 
+  async findDiscoteca(fullName: string) {
+    const discoteca = await this.discotecasRepository.findOne({where: {fullName},});
+    
+    if(!discoteca){
+      throw new NotFoundException (`the discoteca with id #${fullName} was not found `)
+    }
+    return discoteca;
+  }
+
   async update(id: string, updateDiscotecaDto: UpdateDiscotecaDto) {
-    await this.usuarioService.update(id,updateDiscotecaDto);
+    
     const discoteca = await this.discotecasRepository.preload({id:id,...updateDiscotecaDto})
+    await this.discotecasRepository.save(discoteca);
     if(!discoteca){
       throw new NotFoundException (`the discoteca with id #${id} was not found `)
     }
@@ -48,7 +65,7 @@ export class DiscotecasService {
   }
 
   async remove(id: string) {
-    await this.usuarioService.remove(id);
+    
     const discoteca = await this.discotecasRepository.delete({id:id});
     return discoteca;
   }

@@ -9,7 +9,7 @@ import { UsuariosService } from 'src/usuarios/usuarios.service';
 
 @Module({
   controllers: [DiscotecasController],
-  providers: [DiscotecasService, UsuariosService],
-  imports:[TypeOrmModule.forFeature([Discoteca, Usuario]), UsuariosModule]
+  providers: [DiscotecasService],
+  imports:[TypeOrmModule.forFeature([Discoteca])]
 })
 export class DiscotecasModule {}

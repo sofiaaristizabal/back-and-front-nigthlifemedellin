@@ -68,11 +68,13 @@ export class ConsumidoresService {
 
   async login (loginConsumidorDto: LoginConsumidorDto){
 
+    console.log(loginConsumidorDto)
+
     try {
       const {email, password} = loginConsumidorDto;
       const consumidor = await this.consumidorRepository.findOneBy({email})
       if(!consumidor){
-        throw new UnauthorizedException('Invalid credentials');
+        throw new UnauthorizedException('Credenciales invalidas');
       }
       
       console.log(password)
@@ -80,7 +82,7 @@ export class ConsumidoresService {
       const isValid = bcrypt.compareSync(password, consumidor.password);
       console.log(isValid)
       if(!isValid){
-        throw new UnauthorizedException('wrong password')
+        throw new UnauthorizedException('Credenciales invalidas')
       }
 
       const {fullName, id} = consumidor;

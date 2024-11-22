@@ -1,20 +1,24 @@
-import { IsString, IsNotEmpty, IsDate, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsDateString, IsNumberString } from 'class-validator';
 
 export class CreateEventoDto {
   @IsString()
   @IsNotEmpty()
   nombre: string;
 
-  @IsDate()
+  @IsDateString()
   @IsNotEmpty()
-  fecha: Date;
+  fecha: string;
 
   @IsString()
   @IsNotEmpty()
   hora: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsNotEmpty()
-  cover: number;
+  cover: string;
+
+  @IsString()
+  @IsNotEmpty()
+  discotecaId: string;
 
 }

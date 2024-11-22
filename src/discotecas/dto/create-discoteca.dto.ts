@@ -1,7 +1,7 @@
-import { IsString,  MinLength, MaxLength, IsNotEmpty,   IsUrl, IsOptional, IsEmail, Matches } from "class-validator";
+import { IsString,  MinLength, MaxLength, IsNotEmpty,   IsUrl, IsOptional, IsEmail, Matches, IsNumberString } from "class-validator";
 import { CreateUsuarioDto } from "src/usuarios/dto/create-usuario.dto";
 
-export class CreateDiscotecaDto extends CreateUsuarioDto{
+export class CreateDiscotecaDto{
 
     @IsEmail()
     email:string;
@@ -22,9 +22,19 @@ export class CreateDiscotecaDto extends CreateUsuarioDto{
     phoneNumber:string; 
 
     @IsString()
+    latitud:string; 
+
+    @IsString()
+    longitud:string; 
+
+    @IsString()
     @MinLength(5)
     @MaxLength(50)
     direccion:string;
+
+    @IsUrl()
+    @IsOptional()
+    profileImage:string;
 
     @IsString()
     @MaxLength(300)

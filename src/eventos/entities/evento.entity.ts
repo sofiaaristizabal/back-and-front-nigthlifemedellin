@@ -12,15 +12,17 @@ export class Evento {
     nombre:string;
 
     @Column()
-    fecha:Date;
+    fecha:string;
 
     @Column()
     hora:string;
 
     @Column()
-    cover:number;
+    cover:string;
 
-    @Column()
+    @Column({
+        nullable:true
+    })
     afiche:string;
 
     @ManyToOne(()=>Discoteca, (discoteca)=>discoteca.eventos)

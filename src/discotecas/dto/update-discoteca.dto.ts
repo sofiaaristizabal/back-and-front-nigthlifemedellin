@@ -1,11 +1,8 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateDiscotecaDto } from './create-discoteca.dto';
-import { IsString } from 'class-validator';
+import { IsString, IsOptional } from 'class-validator';
 
 export class UpdateDiscotecaDto extends PartialType(CreateDiscotecaDto) {
-
-    @IsString()
-    direccion: string;
 
     @IsString()
     descripcion: string;
@@ -20,7 +17,7 @@ export class UpdateDiscotecaDto extends PartialType(CreateDiscotecaDto) {
     redSocial: string; 
 
     @IsString()
-    profileImage: string; 
-
+    @IsOptional()
+    profileImage: string;
 
 }

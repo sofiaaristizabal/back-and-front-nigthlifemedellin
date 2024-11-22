@@ -15,6 +15,16 @@ export class Discoteca{
     direccion:string;
 
     @Column('text', {
+        nullable:false
+    })
+    latitud:string;
+
+    @Column('text', {
+        nullable:false
+    })
+    longitud:string;
+
+    @Column('text', {
         nullable:true
     })
     descripcion:string;
@@ -36,7 +46,8 @@ export class Discoteca{
     redSocial:string;
 
     @Column('text', {
-        nullable:true
+        nullable:true,
+        default: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSvaiSV-1M4ifeVLW_XBYAUI9ucllKdvwHtA&s"
     })
     profileImage: string; 
 
