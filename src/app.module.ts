@@ -13,14 +13,22 @@ import { ReservasModule } from './reservas/reservas.module';
   imports: [UsuariosModule, DiscotecasModule, EventosModule,
     ConfigModule.forRoot(), 
     TypeOrmModule.forRoot({
+
       type:'postgres',
+      url: process.env.DATABASE_URL,
+      autoLoadEntities:true,
+      synchronize:true,
+      ssl:{
+        rejectUnauthorized:false
+      }
+      /*type:'postgres',
       host:process.env.DB_HOST,
       port:+process.env.DB_PORT,
       username: process.env.DB_USER,
       password:process.env.DB_PASS,
       database:process.env.DB_NAME,
       autoLoadEntities:true,
-      synchronize:true
+      synchronize:true */
     }), ConsumidoresModule, ReservasModule
   ],
   controllers: [AppController],
