@@ -18,7 +18,7 @@ export const EditarPerfilUsuario = () => {
     
      const fetchProfileImage = async () => {
     
-      const url = `http://localhost:3000/discotecas/${id}`;
+      const url = `https://back-and-front-nigthlifemedellin.onrender.com/discotecas/${id}`;
 
       try {
 

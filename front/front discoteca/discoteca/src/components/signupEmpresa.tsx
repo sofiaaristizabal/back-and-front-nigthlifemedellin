@@ -30,7 +30,7 @@ export const SignupEmpresa = () => {
       console.log('longitud:', longitud);
       
   
-      const url = "http://localhost:3000/discotecas";
+      const url = "https://back-and-front-nigthlifemedellin.onrender.com/discotecas";
   
       fetch(url, {
        

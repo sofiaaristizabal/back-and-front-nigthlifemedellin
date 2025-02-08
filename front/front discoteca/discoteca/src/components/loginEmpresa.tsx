@@ -58,7 +58,7 @@ export const LoginEmpresa = () => {
       console.log('Email:', email);
       console.log('Password:', password);
   
-      const url = "http://localhost:3000/discotecas/login";
+      const url = "https://back-and-front-nigthlifemedellin.onrender.com/discotecas/login";
       const body = JSON.stringify({email, password}); //converts email and password from a JSON to a string
   
       try{

@@ -41,7 +41,7 @@ export const AddEvent = () => {
   
         e.preventDefault(); //prevents the default event which is reloading the oage when the form is submitted from happening
     
-        const url = "http://localhost:3000/eventos";
+        const url = "https://back-and-front-nigthlifemedellin.onrender.com/eventos";
     
         fetch(url, {
             method: "POST",

@@ -36,7 +36,7 @@ const MapContainer: React.FC<MapContainerProps> = ({passEventsToMap}) => {
 
     const [eventos, setEventos] = useState<any[]>([]); 
 
-    const url = "http://localhost:3000/eventos";
+    const url = "https://back-and-front-nigthlifemedellin.onrender.com/eventos";
 
     // Ensure Google Maps API is loaded before rendering
     useEffect(() => {

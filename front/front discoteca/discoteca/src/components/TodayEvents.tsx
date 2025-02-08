@@ -11,7 +11,7 @@ const TodayEvents: React.FC<TodayEventsProps> = ({ onEventClick, passEventsToMap
 
   const [events, setEvents] = useState<any[]>([]); 
 
-  const url = "http://localhost:3000/eventos";
+  const url = "https://back-and-front-nigthlifemedellin.onrender.com/eventos";
 
   useEffect(()=>{
     
